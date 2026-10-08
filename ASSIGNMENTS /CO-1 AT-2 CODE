@@ -1,1 +1,44 @@
+def plain_backtracking():
+    variables = ['A', 'B', 'C', 'D', 'E']
+    domains = {v: ['Slot1', 'Slot2', 'Slot3'] for v in variables}
+    constraints = {
+        ('A', 'B'), ('A', 'C'), ('B', 'C'), 
+        ('B', 'D'), ('C', 'D'), ('C', 'E'), ('D', 'E')
+    }
+    
+    assignment = {}
+    attempts = [0]
+    backtracks = [0]
 
+    def is_consistent(var, val):
+        for other, assigned_val in assignment.items():
+            if assigned_val == val:
+                if (var, other) in constraints or (other, var) in constraints:
+                    return False
+        return True
+
+    def backtrack(index):
+        if index == len(variables):
+            return True
+        
+        var = variables[index]
+        for val in domains[var]:
+            attempts[0] += 1
+            print(f"Attempt: Assign {var} = {val} | Current Assignment: {assignment}")
+            if is_consistent(var, val):
+                assignment[var] = val
+                if backtrack(index + 1):
+                    return True
+                del assignment[var]
+            backtracks[0] += 1
+            print(f"Backtrack from {var} = {val}")
+        return False
+
+    if backtrack(0):
+        print(f"\nFinal Valid Timetable: {assignment}")
+        print(f"Total Assignment Attempts: {attempts[0]}, Total Backtracks: {backtracks[0]}")
+    else:
+        print("No solution found.")
+
+if __name__ == "__main__":
+    plain_backtracking()
