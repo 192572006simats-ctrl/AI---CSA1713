@@ -1,0 +1,34 @@
+def dfs_warehouse():
+    start = (1, 1)
+    goal = (5, 5)
+    obstacles = {(2, 2), (2, 3), (3, 3), (4, 2), (4, 4)}
+    
+    # Stack stores tuples of (current_node, path_so_far)
+    stack = [(start, [start])]
+    visited = set()
+    
+    step = 0
+    print("--- DFS STEP-BY-STEP STACK EXPANSION ---")
+    while stack:
+        step += 1
+        current, path = stack.pop()
+        
+        if current in visited:
+            continue
+        visited.add(current)
+        
+        print(f"Step {step}: Expanding node {current} | Current Path: {path}")
+        
+        if current == goal:
+            print(f"\nGoal Reached! Final Path: {path} | Total Cost: {len(path) - 1}")
+            return path
+            
+        x, y = current
+        # Push neighbors onto stack (Left, Up, Down, Right or reverse order for desired traversal order)
+        neighbors = [(x-1, y), (x, y-1), (x, y+1), (x+1, y)]
+        for nx, ny in neighbors:
+            if 1 <= nx <= 5 and 1 <= ny <= 5 and (nx, ny) not in obstacles and (nx, ny) not in visited:
+                stack.append(((nx, ny), path + [(nx, ny)]))
+
+if __name__ == "__main__":
+    dfs_warehouse()
