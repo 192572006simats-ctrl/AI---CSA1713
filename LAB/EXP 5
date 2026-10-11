@@ -1,0 +1,59 @@
+
+from collections import deque
+
+def is_valid(m, c):
+    if m < 0 or c < 0 or m > 3 or c > 3:
+        return False
+
+    # Missionaries must not be outnumbered
+    if m > 0 and m < c:
+        return False
+
+    rm = 3 - m
+    rc = 3 - c
+
+    if rm > 0 and rm < rc:
+        return False
+
+    return True
+
+
+def solve():
+    start = (3, 3, 0)
+    goal = (0, 0, 1)
+
+    queue = deque([(start, [])])
+    visited = {start}
+
+    moves = [
+        (1, 0), (2, 0), (0, 1),
+        (0, 2), (1, 1)
+    ]
+
+    while queue:
+        state, path = queue.popleft()
+        m, c, boat = state
+
+        if state == goal:
+            for step in path + [state]:
+                print(step)
+            return
+
+        for dm, dc in moves:
+            if boat == 0:
+                new_state = (m - dm, c - dc, 1)
+            else:
+                new_state = (m + dm, c + dc, 0)
+
+            if (new_state not in visited
+                    and is_valid(new_state[0], new_state[1])):
+                visited.add(new_state)
+                queue.append(
+                    (new_state, path + [state])
+                )
+
+    print("No solution found")
+
+
+print("M, C, Boat (0 = Left, 1 = Right)")
+solve()
