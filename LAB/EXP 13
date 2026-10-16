@@ -1,0 +1,40 @@
+
+def minimax(tree, node, maximizing):
+    if isinstance(tree[node], int):
+        return tree[node]
+
+    scores = [
+        minimax(tree, child, not maximizing)
+        for child in tree[node]
+    ]
+
+    if maximizing:
+        return max(scores)
+    else:
+        return min(scores)
+
+
+tree = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': 3,
+    'E': 5,
+    'F': 2,
+    'G': 9
+}
+
+best_score = minimax(tree, 'A', True)
+
+print("Optimal Score:", best_score)
+
+for move in tree['A']:
+    score = minimax(tree, move, False)
+    print("Move", move, "Score:", score)
+
+best_move = max(
+    tree['A'],
+    key=lambda move: minimax(tree, move, False)
+)
+
+print("Best Move:", best_move)
