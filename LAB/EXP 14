@@ -1,5 +1,6 @@
 
-def alphabeta(tree, node, depth, alpha, beta, maximizing):
+def alphabeta(tree, node, alpha, beta, maximizing):
+    # Check whether the node is a leaf
     if isinstance(tree[node], int):
         return tree[node]
 
@@ -9,8 +10,7 @@ def alphabeta(tree, node, depth, alpha, beta, maximizing):
         for child in tree[node]:
             value = max(
                 value,
-                alphabeta(tree, child, depth + 1,
-                          alpha, beta, False)
+                alphabeta(tree, child, alpha, beta, False)
             )
             alpha = max(alpha, value)
 
@@ -25,8 +25,7 @@ def alphabeta(tree, node, depth, alpha, beta, maximizing):
         for child in tree[node]:
             value = min(
                 value,
-                alphabeta(tree, child, depth + 1,
-                          alpha, beta, True)
+                alphabeta(tree, child, alpha, beta, True)
             )
             beta = min(beta, value)
 
@@ -40,14 +39,22 @@ tree = {
     'A': ['B', 'C'],
     'B': ['D', 'E'],
     'C': ['F', 'G'],
-    'D': [3, 5],
-    'E': [6, 9],
-    'F': [1, 2],
-    'G': [0, -1]
+    'D': ['H', 'I'],
+    'E': ['J', 'K'],
+    'F': ['L', 'M'],
+    'G': ['N', 'O'],
+    'H': 3,
+    'I': 5,
+    'J': 6,
+    'K': 9,
+    'L': 1,
+    'M': 2,
+    'N': 0,
+    'O': -1
 }
 
 result = alphabeta(
-    tree, 'A', 0,
+    tree, 'A',
     float('-inf'), float('inf'), True
 )
 
