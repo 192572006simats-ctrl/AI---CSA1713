@@ -1,0 +1,34 @@
+import math
+
+def alpha_beta(depth, node_index, is_max, leaves, alpha, beta, evaluated_leaves):
+    # Depth 4 for 16 leaves
+    if depth == 4:
+        evaluated_leaves.append(leaves[node_index])
+        return leaves[node_index]
+
+    if is_max:
+        max_eval = -math.inf
+        for i in range(2):
+            val = alpha_beta(depth + 1, node_index * 2 + i, False, leaves, alpha, beta, evaluated_leaves)
+            max_eval = max(max_eval, val)
+            alpha = max(alpha, val)
+            if beta <= alpha:
+                break # Beta cutoff
+        return max_eval
+    else:
+        min_eval = math.inf
+        for i in range(2):
+            val = alpha_beta(depth + 1, node_index * 2 + i, True, leaves, alpha, beta, evaluated_leaves)
+            min_eval = min(min_eval, val)
+            beta = min(beta, val)
+            if beta <= alpha:
+                break # Alpha cutoff
+        return min_eval
+
+# 16 Leaves from Question 5
+leaves = [8, 6, 5, 7, 2, 9, 4, 3, 6, 1, 5, 2, 9, 7, 3, 4]
+evaluated_leaves = []
+
+root_val = alpha_beta(0, 0, True, leaves, -math.inf, math.inf, evaluated_leaves)
+print(f"Alpha-Beta Root Value: {root_val}")
+print(f"Total Leaves Evaluated ({len(evaluated_leaves)} out of 16): {evaluated_leaves}")
