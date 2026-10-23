@@ -1,0 +1,38 @@
+# --- A* SEARCH ALGORITHM (For Question 2) ---
+def a_star_search(graph, heuristics, start, goal):
+    open_list = [(heuristics[start], 0, start, [start])]
+    closed_set = set()
+    
+    while open_list:
+        open_list.sort(key=lambda x: x[0])
+        f, cost, current, path = open_list.pop(0)
+        
+        if current == goal:
+            return path, cost
+            
+        if current in closed_set:
+            continue
+        closed_set.add(current)
+        
+        for neighbor, weight in graph[current].items():
+            if neighbor not in closed_set:
+                g = cost + weight
+                h = heuristics[neighbor]
+                f = g + h
+                open_list.append((f, g, neighbor, path + [neighbor]))
+    return None, float('inf')
+
+# Graph definition for Campus Delivery Robot
+robot_graph = {
+    'Gate': {'Library': 120, 'Canteen': 200},
+    'Library': {'Gate': 120, 'Lab': 150, 'Hostel': 300},
+    'Canteen': {'Gate': 200, 'Hostel': 100, 'Admin': 260},
+    'Lab': {'Library': 150, 'Auditorium': 350},
+    'Hostel': {'Library': 300, 'Canteen': 100, 'Auditorium': 180},
+    'Admin': {'Canteen': 260, 'Auditorium': 120},
+    'Auditorium': {'Lab': 350, 'Hostel': 180, 'Admin': 120}
+}
+heuristics = {'Gate': 400, 'Library': 330, 'Canteen': 240, 'Lab': 280, 'Hostel': 160, 'Admin': 110, 'Auditorium': 0}
+
+path, total_dist = a_star_search(robot_graph, heuristics, 'Gate', 'Auditorium')
+print(f"A* Optimal Route: {path} with Total Distance: {total_dist}m")
