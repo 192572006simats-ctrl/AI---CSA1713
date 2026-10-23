@@ -1,1 +1,23 @@
+import math
 
+def minimax(depth, node_index, is_max, scores):
+    # Terminal condition (assuming depth 2 tree with 4 leaves)
+    if depth == 2:
+        return scores[node_index]
+
+    if is_max:
+        return max(
+            minimax(depth + 1, node_index * 2, False, scores),
+            minimax(depth + 1, node_index * 2 + 1, False, scores)
+        )
+    else:
+        return min(
+            minimax(depth + 1, node_index * 2, True, scores),
+            minimax(depth + 1, node_index * 2 + 1, True, scores)
+        )
+
+# Leaf scores from left to right (e.g., combining pairs for MAX/MIN levels)
+# For a standard tree, let's pass the leaf node values directly:
+leaf_scores = [3, 5, 6, 9] # Example leaf values for depth 2 game tree
+optimal_value = minimax(0, 0, True, leaf_scores)
+print(f"Minimax Root Value: {optimal_value}")
