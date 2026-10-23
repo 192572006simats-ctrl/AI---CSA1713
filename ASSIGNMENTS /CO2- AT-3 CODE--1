@@ -1,0 +1,40 @@
+def a_star_search(graph, heuristics, start, goal):
+    # Priority queue stores tuples of: (f_score, g_score, current_node, path)
+    open_list = [(heuristics[start], 0, start, [start])]
+    closed_set = set()
+    
+    while open_list:
+        open_list.sort(key=lambda x: x[0])
+        f, cost, current, path = open_list.pop(0)
+        
+        if current == goal:
+            return path, cost
+            
+        if current in closed_set:
+            continue
+        closed_set.add(current)
+        
+        for neighbor, weight in graph[current].items():
+            if neighbor not in closed_set:
+                g = cost + weight
+                h = heuristics[neighbor]
+                f = g + h
+                open_list.append((f, g, neighbor, path + [neighbor]))
+                
+    return None, float('inf')
+
+# Example Graph and Heuristics Setup (from CO2 AT3)
+graph = {
+    'S': {'A': 2, 'B': 3},
+    'A': {'C': 4, 'D': 7},
+    'B': {'D': 2, 'E': 6},
+    'C': {'G': 6},
+    'D': {'G': 3},
+    'E': {'G': 2},
+    'G': {}
+}
+heuristics = {'S': 7, 'A': 8, 'B': 4, 'C': 5, 'D': 3, 'E': 2, 'G': 0}
+
+path, total_cost = a_star_search(graph, heuristics, 'S', 'G')
+print(f"A* Optimal Path: {' -> '.join(path)}")
+print(f"Total Cost: {total_cost}")
