@@ -1,0 +1,64 @@
+
+def alphabeta(tree, node, alpha, beta, maximizing):
+    # Check if the node is a leaf
+    if isinstance(tree[node], int):
+        return tree[node]
+
+    if maximizing:
+        value = float('-inf')
+
+        for child in tree[node]:
+            score = alphabeta(
+                tree, child, alpha, beta, False
+            )
+            value = max(value, score)
+            alpha = max(alpha, value)
+
+            if alpha >= beta:
+                break
+
+        return value
+
+    else:
+        value = float('inf')
+
+        for child in tree[node]:
+            score = alphabeta(
+                tree, child, alpha, beta, True
+            )
+            value = min(value, score)
+            beta = min(beta, value)
+
+            if alpha >= beta:
+                break
+
+        return value
+
+
+# Game tree
+tree = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': ['H', 'I'],
+    'E': ['J', 'K'],
+    'F': ['L', 'M'],
+    'G': ['N', 'O'],
+    'H': 3,
+    'I': 5,
+    'J': 6,
+    'K': 9,
+    'L': 1,
+    'M': 2,
+    'N': 0,
+    'O': -1
+}
+
+result = alphabeta(
+    tree, 'A',
+    float('-inf'),
+    float('inf'),
+    True
+)
+
+print("Optimal Score:", result)
