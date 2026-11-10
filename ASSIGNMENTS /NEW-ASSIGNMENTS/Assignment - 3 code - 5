@@ -1,0 +1,34 @@
+def resolve(ci, cj):
+    resolvents = []
+    for lit1 in ci:
+        for lit2 in cj:
+            if lit1 == "~" + lit2 or "~" + lit1 == lit2:
+                new_clause = list(set(ci + cj) - {lit1, lit2})
+                resolvents.append(new_clause)
+    return resolvents
+
+def resolution_refutation(kb_clauses):
+    clauses = list(kb_clauses)
+    new = set()
+    steps = 0
+    while True:
+        n = len(clauses)
+        pairs = [(clauses[i], clauses[j]) for i in range(n) for j in range(i + 1, n)]
+        for (ci, cj) in pairs:
+            steps += 1
+            resolvents = resolve(ci, cj)
+            for res in resolvents:
+                if not res: # Empty clause found -> Contradiction!
+                    return True, steps
+                if res not in clauses:
+                    new.add(tuple(res))
+        if new.issubset(set(map(tuple, clauses))):
+            return False, steps
+        for c in new:
+            if list(c) not in clauses:
+                clauses.append(list(c))
+
+# Test KB clauses (e.g., A v B, ~A, ~B)
+kb = [['A', 'B'], ['~A'], ['~B']]
+success, total_steps = resolution_refutation(kb)
+print(f"Refutation Success: {success} | Resolution Steps: {total_steps}")
