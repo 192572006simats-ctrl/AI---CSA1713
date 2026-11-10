@@ -1,0 +1,19 @@
+class RescueDroneAgent:
+    def __init__(self):
+        self.kb = [] # stores propositional clauses
+
+    def add_percept_axiom(self, x, y, smoke_sensed):
+        if smoke_sensed:
+            self.kb.append(f"Fire_near_{x}_{y}")
+        else:
+            self.kb.append(f"Safe_near_{x}_{y}")
+
+    def query_safe(self, x, y):
+        # Simplified model check inference for grid cell
+        cell_hazard = f"Hazard_{x}_{y}"
+        # If hazard is contradicted by KB percepts, cell is safe
+        return f"Safe_near_{x}_{y}" in self.kb
+
+agent = RescueDroneAgent()
+agent.add_percept_axiom(1, 2, smoke_sensed=False)
+print(f"Is cell (1, 2) provably safe? {agent.query_safe(1, 2)}")
