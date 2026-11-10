@@ -1,0 +1,42 @@
+def truth_table_entailment(symbols, kb_rules, query):
+    models_examined = 0
+    inference_steps = 0
+    
+    def evaluate(rule_str, model):
+        # Evaluate logical expressions safely in python dict model context
+        local_env = {s: model[s] for s in symbols}
+        return eval(rule_str, {"__builtins__": None}, local_env)
+
+    def check_all(syms, model):
+        nonlocal models_examined, inference_steps
+        if not syms:
+            models_examined += 1
+            kb_true = all(evaluate(rule, model) for rule in kb_rules)
+            inference_steps += len(kb_rules)
+            if kb_true:
+                return evaluate(query, model)
+            return True # Vacuously true if KB is false in model
+        
+        p = syms[0]
+        rest = syms[1:]
+        model[p] = True
+        if not check_all(rest, model):
+            return False
+        model[p] = False
+        return check_all(rest, model)
+
+    result = check_all(symbols, {})
+    return result, models_examined, inference_steps
+
+# Sample test run
+symbols = ['T_Valid', 'Booked', 'Safety_Pass', 'Access_Granted']
+kb = [
+    "T_Valid and Safety_Pass and Booked == Access_Granted", # Biconditional
+    "Booked == True",
+    "T_Valid == True",
+    "Safety_Pass == True"
+]
+query = "Access_Granted == True"
+
+res, models, steps = truth_table_entailment(symbols, kb, query)
+print(f"Entailed: {res} | Models Examined: {models} | Inference Steps: {steps}")
