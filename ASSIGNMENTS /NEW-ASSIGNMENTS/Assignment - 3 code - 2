@@ -1,0 +1,37 @@
+class FOLAdvisorySystem:
+    def __init__(self):
+        self.facts = {
+            ('passed', 'student1', 'cs101'),
+            ('prereq', 'cs101', 'ai202'),
+            ('course', 'ai202', '')  # Standardized to length 3
+        }
+    
+    def indirect_prereq(self, c1, c2, visited=None):
+        if visited is None: 
+            visited = set()
+        if (c1, c2) in visited: 
+            return False
+        visited.add((c1, c2))
+        
+        for fact in self.facts:
+            if len(fact) == 3 and fact[0] == 'prereq':
+                if fact[1] == c1 and fact[2] == c2:
+                    return True
+                if fact[1] == c1:
+                    intermediate = fact[2]
+                    if self.indirect_prereq(intermediate, c2, visited):
+                        return True
+        return False
+
+    def can_register(self, student, course):
+        # Check prerequisites
+        for fact in self.facts:
+            if len(fact) == 3 and fact[0] == 'prereq' and fact[2] == course:
+                prereq_course = fact[1]
+                passed_fact = ('passed', student, prereq_course)
+                if passed_fact not in self.facts and not self.indirect_prereq(prereq_course, course):
+                    return False
+        return True
+
+sys = FOLAdvisorySystem()
+print(f"Can student1 register for ai202? {sys.can_register('student1', 'ai202')}")
