@@ -1,0 +1,30 @@
+def unify(x, y, theta=None):
+    if theta is None: theta = {}
+    if theta == "FAILURE": return "FAILURE"
+    if x == y: return theta
+    elif isinstance(x, str) and x.islower(): # Variable
+        return unify_var(x, y, theta)
+    elif isinstance(y, str) and y.islower(): # Variable
+        return unify_var(y, x, theta)
+    elif isinstance(x, tuple) and isinstance(y, tuple):
+        if len(x) != len(y): return "FAILURE"
+        return unify(x[1:], y[1:], unify(x[0], y[0], theta))
+    return "FAILURE"
+
+def unify_var(var, x, theta):
+    if var in theta: return unify(theta[var], x, theta)
+    elif x in theta: return unify(var, theta[x], theta)
+    elif occurs_check(var, x, theta): return "FAILURE"
+    else:
+        new_theta = theta.copy()
+        new_theta[var] = x
+        return new_theta
+
+def occurs_check(var, x, theta):
+    if var == x: return True
+    elif isinstance(x, str) and x in theta:
+        return occurs_check(var, theta[x], theta)
+    return False
+
+# Test Unification
+print(unify(('takes', 'x', 'drug1'), ('takes', 'patientA', 'y')))
