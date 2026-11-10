@@ -1,0 +1,26 @@
+import random
+
+def tsp_local_search(distance_matrix, num_cities, iterations=1000):
+    best_tour = list(range(num_cities))
+    def route_cost(tour):
+        return sum(distance_matrix[tour[i]][tour[(i+1)%num_cities]] for i in range(num_cities))
+    
+    best_cost = route_cost(best_tour)
+    for _ in range(iterations):
+        tour = list(range(num_cities))
+        random.shuffle(tour)
+        cost = route_cost(tour)
+        if cost < best_cost:
+            best_cost = cost
+            best_tour = tour
+    return best_tour, best_cost
+
+# 4-city distance matrix test
+matrix = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+tour, cost = tsp_local_search(matrix, 4)
+print(f"Best Tour: {tour}, Min Cost: {cost}")
