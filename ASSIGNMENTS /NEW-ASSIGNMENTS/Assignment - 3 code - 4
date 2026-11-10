@@ -1,0 +1,34 @@
+class NetworkFaultKB:
+    def __init__(self):
+        # Horn Clauses: head -> [body conditions]
+        self.rules = {
+            'UnreachableServer': [['PingFailed'], ['RouterDown']],
+            'PingFailed': [['NetworkCongestion']],
+            'RouterDown': [] # Fact / base condition
+        }
+        self.memo = {}
+
+    def backward_chain(self, goal):
+        if goal in self.memo: return self.memo[goal]
+        if goal in self.rules and not self.rules[goal]:
+            self.memo[goal] = True
+            return True
+        
+        if goal not in self.rules:
+            return False
+            
+        for antecedent_list in self.rules[goal]:
+            proved = True
+            for sub_goal in antecedent_list:
+                if not self.backward_chain(sub_goal):
+                    proved = False
+                    break
+            if proved:
+                self.memo[goal] = True
+                return True
+                
+        self.memo[goal] = False
+        return False
+
+kb = NetworkFaultKB()
+print(f"Is UnreachableServer provable? {kb.backward_chain('UnreachableServer')}")
