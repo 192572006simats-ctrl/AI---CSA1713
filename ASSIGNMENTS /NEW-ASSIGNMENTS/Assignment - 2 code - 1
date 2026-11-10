@@ -1,0 +1,27 @@
+import heapq
+
+def a_star_search(graph, heuristics, start, goal):
+    open_list = [(heuristics[start], 0, start, [start])]
+    closed_set = set()
+    nodes_expanded = 0
+    max_frontier = 1
+
+    while open_list:
+        max_frontier = max(max_frontier, len(open_list))
+        open_list.sort(key=lambda x: x[0])
+        f, cost, current, path = open_list.pop(0)
+
+        if current == goal:
+            return path, cost, nodes_expanded, max_frontier
+
+        if current in closed_set:
+            continue
+        closed_set.add(current)
+        nodes_expanded += 1
+
+        for neighbor, weight in graph.get(current, {}).items():
+            if neighbor not in closed_set:
+                g = cost + weight
+                h = heuristics[neighbor]
+                open_list.append((g + h, g, neighbor, path + [neighbor]))
+    return None, float('inf'), nodes_expanded, max_frontier
