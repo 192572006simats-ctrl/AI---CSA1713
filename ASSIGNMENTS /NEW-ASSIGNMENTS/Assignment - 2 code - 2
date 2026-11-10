@@ -1,0 +1,30 @@
+def alpha_beta_pruning(depth, node_index, maximizing, values, alpha, beta, stats):
+    if depth == 3: # Leaf level for binary tree of depth 3 (8 leaves)
+        stats['visited'] += 1
+        return values[node_index]
+
+    if maximizing:
+        max_eval = float('-inf')
+        for i in range(2):
+            val = alpha_beta_pruning(depth + 1, node_index * 2 + i, False, values, alpha, beta, stats)
+            max_eval = max(max_eval, val)
+            alpha = max(alpha, val)
+            if beta <= alpha:
+                stats['cutoffs'] += 1
+                break
+        return max_eval
+    else:
+        min_eval = float('inf')
+        for i in range(2):
+            val = alpha_beta_pruning(depth + 1, node_index * 2 + i, True, values, alpha, beta, stats)
+            min_eval = min(min_eval, val)
+            beta = min(beta, val)
+            if beta <= alpha:
+                stats['cutoffs'] += 1
+                break
+        return min_eval
+
+stats = {'visited': 0, 'cutoffs': 0}
+leaves = [3, 5, 6, 9, 1, 2, 0, -1]
+root_val = alpha_beta_pruning(0, 0, True, leaves, float('-inf'), float('inf'), stats)
+print(f"Root Value: {root_val}, Nodes Visited: {stats['visited']}, Cutoffs: {stats['cutoffs']}")
