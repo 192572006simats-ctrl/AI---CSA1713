@@ -1,1 +1,38 @@
+import heapq
 
+def uniform_cost_search(graph, start, goal):
+    # Priority queue stores (cost, current_node, path)
+    frontier = [(0, start, [start])]
+    explored = set()
+    nodes_expanded = 0
+    max_frontier_size = 1
+
+    while frontier:
+        max_frontier_size = max(max_frontier_size, len(frontier))
+        cost, current, path = heapq.heappop(frontier)
+
+        if current == goal:
+            return path, cost, nodes_expanded, max_frontier_size
+
+        if current in explored:
+            continue
+        explored.add(current)
+        nodes_expanded += 1
+
+        for neighbor, weight in graph.get(current, {}).items():
+            if neighbor not in explored:
+                heapq.heappush(frontier, (cost + weight, neighbor, path + [neighbor]))
+
+    return None, float('inf'), nodes_expanded, max_frontier_size
+
+# Test Input Example
+hospital_graph = {
+    'Pharmacy': {'J1': 2, 'J2': 5},
+    'J1': {'WardA': 3},
+    'J2': {'WardA': 1, 'WardB': 4},
+    'WardA': {},
+    'WardB': {}
+}
+
+path, cost, expanded, mem = uniform_cost_search(hospital_graph, 'Pharmacy', 'WardA')
+print(f"Path Found: {path}, Cost: {cost}, Expanded: {expanded}, Max Frontier: {mem}")
