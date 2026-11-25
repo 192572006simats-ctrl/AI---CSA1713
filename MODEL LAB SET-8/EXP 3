@@ -1,1 +1,17 @@
 
+student(101, arun).
+student(102, ravi).
+
+faculty(f1, kumar).
+department(cse).
+course(cs101, ai).
+
+teaches(f1, cs101).
+enrolled(101, cs101).
+enrolled(102, cs101).
+
+faculty_teaches(C, F) :-
+    teaches(ID, C), faculty(ID, F).
+
+students_studying(C, S) :-
+    enrolled(ID, C), student(ID, S).
