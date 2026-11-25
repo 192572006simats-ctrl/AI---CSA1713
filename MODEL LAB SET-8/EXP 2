@@ -1,0 +1,27 @@
+
+def dfs(state, path, visited):
+    if state == (0, 0, 0):
+        return path
+
+    m, c, b = state
+
+    for x, y in [(1,0), (2,0), (0,1), (0,2), (1,1)]:
+        nm, nc = (m-x, c-y) if b else (m+x, c+y)
+        nb = 1-b
+
+        if not (0 <= nm <= 3 and 0 <= nc <= 3):
+            continue
+
+        if (nm > 0 and nm < nc) or (3-nm > 0 and 3-nm < 3-nc):
+            continue
+
+        new = (nm, nc, nb)
+
+        if new not in visited:
+            result = dfs(new, path+[new], visited | {new})
+            if result:
+                return result
+
+    return None
+
+print(dfs((3,3,1), [(3,3,1)], {(3,3,1)}))
