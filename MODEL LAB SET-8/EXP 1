@@ -1,1 +1,36 @@
+import heapq
 
+grid = [
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 0, 0]
+]
+
+def astar(start, goal):
+    queue = [(0, start, [start])]
+    visited = set()
+
+    while queue:
+        cost, pos, path = heapq.heappop(queue)
+
+        if pos == goal:
+            return path
+
+        if pos in visited:
+            continue
+
+        visited.add(pos)
+
+        for dx, dy in [(0,1), (1,0), (0,-1), (-1,0)]:
+            x, y = pos[0]+dx, pos[1]+dy
+
+            if (0 <= x < 3 and 0 <= y < 3
+                and grid[x][y] == 0 and (x,y) not in visited):
+                h = abs(x-goal[0]) + abs(y-goal[1])
+                heapq.heappush(queue, (
+                    cost+1+h, (x,y), path+[(x,y)]
+                ))
+
+    return None
+
+print(astar((0,0), (2,2)))
