@@ -1,1 +1,20 @@
 
+symptom(ravi, fever).
+symptom(ravi, cough).
+symptom(ravi, headache).
+
+symptom(anu, cold).
+symptom(anu, sneezing).
+
+diagnosis(X, flu) :-
+    symptom(X, fever),
+    symptom(X, cough),
+    symptom(X, headache).
+
+diagnosis(X, common_cold) :-
+    symptom(X, cold),
+    symptom(X, sneezing).
+
+diagnosis(X, viral_fever) :-
+    symptom(X, fever),
+    symptom(X, headache).
